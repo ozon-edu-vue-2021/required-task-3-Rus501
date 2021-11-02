@@ -2,11 +2,11 @@
   <div class="map">
     <h3>Карта офиса</h3>
 
-    <div v-if="!isLoading" class="map-root">
+    <div v-if="isLoading">Loading...</div>
+    <div v-else class="map-root">
       <MapSVG ref="svg" />
       <TableSVG v-show="false" ref="table" />
     </div>
-    <div v-else>Loading...</div>
   </div>
 </template>
 
@@ -59,11 +59,7 @@ export default {
             legend.find((it) => it.group_id === table.group_id)?.color ??
               "transparent"
           );
-
-        console.log(svgTable);
       });
-
-      console.log(svgTablesGroup);
     },
   },
 };
