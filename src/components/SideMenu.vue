@@ -85,11 +85,11 @@ export default {
 
   methods: {
     countTables() {
-      legend.forEach((group) => {
-        group.counter = this.tables.filter(
-          (table) => table.group_id === group.group_id
-        ).length;
-      });
+      this.tables.forEach((table) =>
+        this.legend.find((group) =>
+          table.group_id === group.group_id ? (group.counter += 1) : null
+        )
+      );
     },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
