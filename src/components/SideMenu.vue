@@ -23,10 +23,10 @@
       <div v-else class="legend">
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
-            <Draggable v-model="legend">
+            <Draggable v-model="legend" @end="rebuildChart">
               <transition-group type="transition" class="draggable">
                 <LegendItem
-                  v-for="item in legend"
+                  v-for="item in chartLegend"
                   :key="item.group_id"
                   :color="item.color"
                   :text="item.text"
@@ -79,29 +79,32 @@ export default {
     };
   },
   mounted() {
-    this.countTables();
     this.makeChart();
   },
-
-  methods: {
-    countTables() {
-      this.tables.forEach((table) =>
-        this.legend.find((group) =>
-          table.group_id === group.group_id ? (group.counter += 1) : null
-        )
-      );
+  computed: {
+    chartLegend() {
+      return this.legend.map((group) => {
+        return {
+          ...group,
+          counter: this.tables.filter(
+            (table) => table.group_id === group.group_id
+          ).length,
+        };
+      });
     },
+  },
+  methods: {
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
     },
     makeChart() {
       const chartData = {
-        labels: this.legend.map((legendItem) => legendItem.text),
+        labels: this.chartLegend.map((group) => group.text),
         datasets: [
           {
             label: "Легенда",
-            backgroundColor: this.legend.map((legendItem) => legendItem.color),
-            data: this.legend.map((legendItem) => legendItem.counter),
+            backgroundColor: this.chartLegend.map((group) => group.color),
+            data: this.chartLegend.map((group) => group.counter),
           },
         ],
       };
@@ -111,6 +114,9 @@ export default {
         },
       };
       this.$refs.chart.renderChart(chartData, options);
+    },
+    rebuildChart() {
+      this.makeChart();
     },
   },
 };
