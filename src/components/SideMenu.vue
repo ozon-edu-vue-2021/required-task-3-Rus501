@@ -23,12 +23,7 @@
       <div v-else class="legend">
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
-            <Draggable
-              v-model="legend"
-              v-bind="dragOptions"
-              @start="drag = true"
-              @end="drag = false"
-            >
+            <Draggable v-model="legend">
               <transition-group type="transition" class="draggable">
                 <LegendItem
                   v-for="item in legend"
@@ -55,6 +50,7 @@
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
+import tables from "@/assets/data/tables.json";
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
 
@@ -77,19 +73,23 @@ export default {
   },
   data() {
     return {
-      legend: [],
+      legend,
+      tables,
       drag: false,
     };
   },
-  created() {
-    this.loadLegend();
-  },
   mounted() {
+    this.countTables();
     this.makeChart();
   },
+
   methods: {
-    loadLegend() {
-      this.legend = legend;
+    countTables() {
+      legend.forEach((group) => {
+        group.counter = this.tables.filter(
+          (table) => table.group_id === group.group_id
+        ).length;
+      });
     },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
@@ -111,16 +111,6 @@ export default {
         },
       };
       this.$refs.chart.renderChart(chartData, options);
-    },
-  },
-  computed: {
-    dragOptions() {
-      return {
-        animation: 200,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
     },
   },
 };
@@ -227,10 +217,5 @@ h3 {
   justify-content: space-between;
   row-gap: 16px;
   transition: all 500ms;
-}
-
-.ghost {
-  opacity: 0.5;
-  background: #c8ebfb;
 }
 </style>
