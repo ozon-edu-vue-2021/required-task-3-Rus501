@@ -5,15 +5,17 @@
     <div v-if="isLoading">Loading...</div>
     <div v-else class="map-root">
       <MapSVG ref="svg" />
-      <TableSVG v-show="false" ref="table" />
+      <TableSVG v-show="false" ref="table" @click="showInfo" />
     </div>
   </div>
 </template>
 
 <script>
+import * as d3 from "d3";
+
 import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
-import * as d3 from "d3";
+
 import tables from "@/assets/data/tables.json";
 import legend from "@/assets/data/legend.json";
 
@@ -34,7 +36,7 @@ export default {
   mounted() {
     this.svg = d3.select(this.$refs.svg);
     this.g = this.svg.select("g");
-    this.tableSVG = d3.select(this.$refs.table);
+    this.tableSVGRef = d3.select(this.$refs.table);
 
     this.g ? this.drawTables() : console.error("error");
   },
@@ -53,13 +55,18 @@ export default {
           .append("g")
           .attr("transform", `rotate(${table.rotate || 0})`)
           .attr("group_id", table.group_id)
-          .html(this.tableSVG.html())
+          .html(this.tableSVGRef.html())
           .attr(
             "fill",
             legend.find((it) => it.group_id === table.group_id)?.color ??
               "transparent"
           );
+
+        svgTable.on("click", this.showInfo);
       });
+    },
+    showInfo(event) {
+      this.$emit("pog", event.currentTarget);
     },
   },
 };
