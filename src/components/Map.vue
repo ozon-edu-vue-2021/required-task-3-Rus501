@@ -5,13 +5,14 @@
     <div v-if="isLoading">Loading...</div>
     <div v-else class="map-root">
       <MapSVG ref="svg" />
-      <TableSVG v-show="false" ref="table" @click="showInfo" />
+      <TableSVG v-click-outside="closeProfile" v-show="false" ref="table" />
     </div>
   </div>
 </template>
 
 <script>
 import * as d3 from "d3";
+import ClickOutside from "vue-click-outside";
 
 import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
@@ -24,6 +25,9 @@ export default {
     MapSVG,
     TableSVG,
   },
+  directives: {
+    ClickOutside,
+  },
   data() {
     return {
       isLoading: false,
@@ -34,6 +38,8 @@ export default {
     };
   },
   mounted() {
+    this.popupItem = this.$el;
+
     this.svg = d3.select(this.$refs.svg);
     this.g = this.svg.select("g");
     this.tableSVGRef = d3.select(this.$refs.table);
@@ -60,13 +66,15 @@ export default {
             "fill",
             legend.find((it) => it.group_id === table.group_id)?.color ??
               "transparent"
-          );
-
-        svgTable.on("click", this.showInfo);
+          )
+          .on("click", () => {
+            this.$emit("selected", table._id);
+          });
       });
     },
-    showInfo(event) {
-      this.$emit("pog", event.currentTarget);
+    closeProfile(event) {
+      console.log(event.target);
+      this.$emit("close");
     },
   },
 };

@@ -15,12 +15,12 @@
       <div class="toolbar__actions"></div>
     </div>
     <div class="content">
-      <div v-if="isUserOpenned" class="profile">
+      <div v-show="isUserOpenned" class="profile">
         <div v-if="!person" class="profile__empty">Место пустое</div>
 
         <PersonCard :person="person" />
       </div>
-      <div v-else class="legend">
+      <div v-show="!isUserOpenned" class="legend">
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
             <Draggable v-model="legend" @end="rebuildChart">
@@ -49,8 +49,10 @@
 <script>
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
+
 import legend from "@/assets/data/legend.json";
 import tables from "@/assets/data/tables.json";
+
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
 
@@ -80,6 +82,7 @@ export default {
   },
   mounted() {
     this.makeChart();
+    this.popupItem = this.$el;
   },
   computed: {
     chartLegend() {
