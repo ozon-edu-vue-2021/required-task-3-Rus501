@@ -6,6 +6,7 @@
         @update:isUserOpenned="isUserOpenned = false"
         :isUserOpenned="isUserOpenned"
         :person="person"
+        v-click-outside="closeProfile"
       />
     </div>
   </div>
@@ -14,13 +15,20 @@
 <script>
 import Map from "./components/Map.vue";
 import SideMenu from "./components/SideMenu.vue";
+
 import people from "@/assets/data/people.json";
+
+import ClickOutside from "vue-click-outside";
+import "normalize.css";
 
 export default {
   name: "App",
   components: {
     Map,
     SideMenu,
+  },
+  directives: {
+    ClickOutside,
   },
   data() {
     return {
@@ -31,7 +39,9 @@ export default {
   methods: {
     getSelectedTable(tableId) {
       this.person = people.find((person) => person._id === tableId);
-      this.isUserOpenned = true;
+      setTimeout(() => {
+        this.isUserOpenned = true;
+      }, 0);
     },
     closeProfile() {
       this.isUserOpenned = false;

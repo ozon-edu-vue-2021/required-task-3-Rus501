@@ -18,7 +18,7 @@
       <div v-show="isUserOpenned" class="profile">
         <div v-if="!person" class="profile__empty">Место пустое</div>
 
-        <PersonCard :person="person" />
+        <PersonCard v-else :person="person" />
       </div>
       <div v-show="!isUserOpenned" class="legend">
         <div class="legend__data">

@@ -9,13 +9,17 @@
       </div>
 
       <div class="person__info-email">Почта: {{ person.email }}</div>
-      <div class="person__info-email">Дата регистрации: {{ formatedDate }}</div>
+      <div class="person__info-email">
+        Дата регистрации: {{ formatedDate || 0 }}
+      </div>
       <div class="person__info-about">О себе: {{ person.about }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { format, parseISO } from "date-fns";
+
 export default {
   props: {
     person: {
@@ -25,7 +29,8 @@ export default {
   },
   computed: {
     formatedDate() {
-      return this.person.registered;
+      const date = parseISO(this.person.registered);
+      return this.person.registered ? format(date, "dd.MM.yyyy") : null;
     },
   },
 };

@@ -5,14 +5,13 @@
     <div v-if="isLoading">Loading...</div>
     <div v-else class="map-root">
       <MapSVG ref="svg" />
-      <TableSVG v-click-outside="closeProfile" v-show="false" ref="table" />
+      <TableSVG v-show="false" ref="table" />
     </div>
   </div>
 </template>
 
 <script>
 import * as d3 from "d3";
-import ClickOutside from "vue-click-outside";
 
 import MapSVG from "@/assets/images/map.svg";
 import TableSVG from "@/assets/images/workPlace.svg";
@@ -24,9 +23,6 @@ export default {
   components: {
     MapSVG,
     TableSVG,
-  },
-  directives: {
-    ClickOutside,
   },
   data() {
     return {
